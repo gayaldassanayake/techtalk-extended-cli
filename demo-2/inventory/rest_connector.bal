@@ -27,4 +27,3 @@ service /inventoryParser on new http:Listener(restConnectorPort) {
         return getEDINames();
     }
 }
-    

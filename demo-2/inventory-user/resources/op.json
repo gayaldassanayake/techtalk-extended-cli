@@ -1,0 +1,87 @@
+{
+    "TransactionSetHeader": {
+        "code": "ST",
+        "ST01__TransactionSetIdentifierCode": "850",
+        "ST02__TransactionSetControlNumber": "0001"
+    },
+    "BeginningSegmentforPurchaseOrder": {
+        "code": "BEG",
+        "BEG01__TransactionSetPurposeCode": "00",
+        "BEG02__PurchaseOrderTypeCode": "RL",
+        "BEG03__PurchaseOrderNumber": "508517",
+        "BEG04__ReleaseNumber": "1001",
+        "BEG05__Date": "20000506",
+        "BEG06__ContractNumber": "",
+        "BEG07__AcknowledgmentType": "NA",
+        "BEG08__InvoiceTypeCode": "IEL"
+    },
+    "Loop_1_3100": {
+        "PartyIdentification": {
+            "code": "N1",
+            "N101__EntityIdentifierCode": "BY",
+            "N102__Name": "ABC Aerospace Corporation",
+            "N103__IdentificationCodeQualifier": "9",
+            "N104__IdentificationCode": "123456789-0101"
+        },
+        "PartyLocation": {
+            "code": "N3",
+            "N301__AddressInformation": "1000 BOARDWALK DRIVE"
+        },
+        "GeographicLocation": {
+            "code": "N4",
+            "N401__CityName": "SOMEWHERE",
+            "N402__StateorProvinceCode": "CA",
+            "N403__PostalCode": "98898",
+            "N404__CountryCode": "",
+            "N405__LocationQualifier": "",
+            "N406__LocationIdentifier": "",
+            "N407__CountrySubdivisionCode": ""
+        }
+    },
+    "Loop_2_0100": {
+        "BaselineItemData": {
+            "code": "PO1",
+            "PO101__AssignedIdentification": "AI456",
+            "PO102__Quantity": "908",
+            "PO103__UnitorBasisforMeasurementCode": "KG",
+            "PO104__UnitPrice": "50",
+            "PO105__BasisofUnitPriceCode": "JKL",
+            "PO106__ProductServiceIDQualifier": "PSIDQ045",
+            "PO107__ProductServiceID": "PSID876"
+        },
+        "ConditionsofSale": {
+            "code": "IT8",
+            "IT801__SalesRequirementCode": "SR001",
+            "IT802__ActionCode": "AC376",
+            "IT803__Amount": 34.56,
+            "IT804__AccountNumber": "7994740",
+            "IT805__Date": "2024-06-13",
+            "IT806__AgencyQualifierCode": "AQC3456",
+            "IT807__ProductServiceSubstitutionCode": "PSS345",
+            "IT808__ProductServiceIDQualifier": "B0",
+            "IT809__ProductServiceID": "PSID876"
+        }
+    },
+    "Loop_3_0100": {
+        "TransactionTotals": {
+            "code": "CTT",
+            "CTT01__NumberofLineItems": 1.0,
+            "CTT02__HashTotal": "1873",
+            "CTT03__Weight": "5.12",
+            "CTT04__UnitorBasisforMeasurementCode": "KG",
+            "CTT05__Volume": "4.5",
+            "CTT06__UnitorBasisforMeasurementCode": "L",
+            "CTT07__Description": "fuel filter"
+        },
+        "MonetaryAmountInformation": {
+            "code": "AMT",
+            "AMT01__AmountQualifierCode": "TT",
+            "AMT02__MonetaryAmount": "144"
+        }
+    },
+    "TransactionSetTrailer": {
+        "code": "SE",
+        "SE01__NumberofIncludedSegments": 10.0,
+        "SE02__TransactionSetControlNumber": "0001"
+    }
+}
