@@ -1,0 +1,1 @@
+Auto generated client for the hospital service.
