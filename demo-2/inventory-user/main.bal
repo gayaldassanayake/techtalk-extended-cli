@@ -1,4 +1,3 @@
-import ballerina/io;
 import ballerina/random;
 import ballerina/time;
 
@@ -7,12 +6,8 @@ import aerospace/inventory.m850;
 
 public function main() returns error? {
     // read the purchase order from ./resources/po_11_06_2024.edi file
-    string orderText = check io:fileReadString("./resources/po_11_06_2024.edi");
-    m850:EDI_850_X12_005020_850 purchaseOrder = check m850:fromEdiString(orderText);
-
+    
     // transform the purchase order to an invoice
-    m810:EDI_810_X12_005020_810 invoice = getInvoiceFromPurchaseOrder(purchaseOrder);
-    io:println(invoice.toJson());
 }
 
 function getInvoiceFromPurchaseOrder(m850:EDI_850_X12_005020_850 purchaseOrder) returns m810:EDI_810_X12_005020_810 {
