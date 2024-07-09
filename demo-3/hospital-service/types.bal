@@ -1,5 +1,3 @@
-import ballerina/time;
-
 public type Patient record {|
     readonly string id;
     *PatientEntry;
@@ -8,7 +6,7 @@ public type Patient record {|
 public type PatientEntry record {|
     string firstName;
     string lastName;
-    time:Date dob;
+    Date dob;
     string gender;
 |};
 
@@ -19,7 +17,7 @@ public type MedicalRecord record {|
 
 public type MedicalRecordEntry record {|
     string patientId;
-    time:Date date;
+    Date date;
     string description;
 |};
 
@@ -43,4 +41,10 @@ public type InventoryItemEntry record {|
     string name;
     string description;
     int quantity;
+|};
+
+public type Date record {|
+    int year;
+    int month;
+    int day;
 |};
