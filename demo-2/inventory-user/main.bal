@@ -1,8 +1,8 @@
 import ballerina/random;
 import ballerina/time;
 
-import aerospace/inventory.m810;
-import aerospace/inventory.m850;
+import aerospace/inventory.minvoice;
+import aerospace/inventory.mpurchaseorder;
 
 public function main() returns error? {
     // read the purchase order from ./resources/po_11_06_2024.edi file
@@ -10,7 +10,7 @@ public function main() returns error? {
     // transform the purchase order to an invoice
 }
 
-function getInvoiceFromPurchaseOrder(m850:EDI_850_X12_005020_850 purchaseOrder) returns m810:EDI_810_X12_005020_810 {
+function getInvoiceFromPurchaseOrder(mpurchaseorder:EDI_purchaseorder_X12_005020_850 purchaseOrder) returns minvoice:EDI_invoice_X12_005020_810 {
     return {
         // header
         TransactionSetHeader: {
