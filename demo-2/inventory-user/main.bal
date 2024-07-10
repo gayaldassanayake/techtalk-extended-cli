@@ -19,7 +19,7 @@ function getInvoiceFromPurchaseOrder(mpurchaseorder:EDI_purchaseorder_X12_005020
         },
         // beginning of the invoice 
         BeginningSegmentforInvoice: {
-            BIG01__Date: time:utcNow().toString(),
+            BIG01__Date: time:utcToString(time:utcNow()).toString(),
             BIG02__InvoiceNumber: getInvoiceNumber()
         },
         // items
