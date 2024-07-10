@@ -2,69 +2,93 @@ import ballerina/http;
 import ballerina/uuid;
 
 service /hospital\-support on hospitalEP {
-    resource function get employees() returns Employee[] {
-        return employeeTable.toArray();
-    }
-
-    resource function get employees/[string employeeId]() returns Employee|http:NotFound {
-        if !employeeTable.hasKey(employeeId) {
-            return {body: "Employee not found"};
+    isolated resource function get employees() returns Employee[] {
+        lock {
+	        return employeeTable.toArray().clone();
         }
-        return employeeTable.get(employeeId);
     }
 
-    resource function post employees(@http:Payload EmployeeEntry employeeEntry) returns Employee {
+    isolated resource function get employees/[string employeeId]() returns Employee|http:NotFound {
+        lock {
+	        if !employeeTable.hasKey(employeeId) {
+	            return {body: "Employee not found"};
+	        }
+	        return employeeTable.get(employeeId).clone();
+        }
+    }
+
+    isolated resource function post employees(@http:Payload EmployeeEntry employeeEntry) returns Employee {
         Employee employee = {id: uuid:createRandomUuid(), ...employeeEntry};
-        employeeTable.put(employee);
+        lock {
+	        employeeTable.put(employee.clone());
+        }
         return employee;
     }
 
-    resource function put employees/[string employeeId](@http:Payload EmployeeEntry employeeEntry) returns Employee|http:NotFound {
-        if !employeeTable.hasKey(employeeId) {
-            return {body: "Employee not found"};
+    isolated resource function put employees/[string employeeId](@http:Payload EmployeeEntry employeeEntry) returns Employee|http:NotFound {
+        lock {
+	        if !employeeTable.hasKey(employeeId) {
+	            return {body: "Employee not found"};
+	        }
         }
         Employee employee = {id: employeeId, ...employeeEntry};
-        employeeTable.put(employee);
+        lock {
+	        employeeTable.put(employee.clone());
+        }
         return employee;
     }
 
-    resource function delete employees/[string employeeId]() returns Employee|http:NotFound {
-        if !employeeTable.hasKey(employeeId) {
-            return {body: "Employee not found"};
+    isolated resource function delete employees/[string employeeId]() returns Employee|http:NotFound {
+        lock {
+	        if !employeeTable.hasKey(employeeId) {
+	            return {body: "Employee not found"};
+	        }
+	        return employeeTable.remove(employeeId).clone();
         }
-        return employeeTable.remove(employeeId);
     }
 
-    resource function get inventory\-items() returns InventoryItem[] {
-        return inventoryItemTable.toArray();
-    }
-
-    resource function get inventory\-items/[string itemId]() returns InventoryItem|http:NotFound {
-        if !inventoryItemTable.hasKey(itemId) {
-            return {body: "Inventory item not found"};
+    isolated resource function get inventory\-items() returns InventoryItem[] {
+        lock {
+	        return inventoryItemTable.toArray().clone();
         }
-        return inventoryItemTable.get(itemId);
     }
 
-    resource function post inventory\-items(@http:Payload InventoryItemEntry inventoryItemEntry) returns InventoryItem {
+    isolated resource function get inventory\-items/[string itemId]() returns InventoryItem|http:NotFound {
+        lock {
+	        if !inventoryItemTable.hasKey(itemId) {
+	            return {body: "Inventory item not found"};
+	        }
+	        return inventoryItemTable.get(itemId).clone();
+        }
+    }
+
+    isolated resource function post inventory\-items(@http:Payload InventoryItemEntry inventoryItemEntry) returns InventoryItem {
         InventoryItem inventoryItem = {id: uuid:createRandomUuid(), ...inventoryItemEntry};
-        inventoryItemTable.put(inventoryItem);
+        lock {
+	        inventoryItemTable.put(inventoryItem.clone());
+        }
         return inventoryItem;
     }
 
-    resource function put inventory\-items/[string itemId](@http:Payload InventoryItemEntry inventoryItemEntry) returns InventoryItem|http:NotFound {
-        if !inventoryItemTable.hasKey(itemId) {
-            return {body: "Inventory item not found"};
+    isolated resource function put inventory\-items/[string itemId](@http:Payload InventoryItemEntry inventoryItemEntry) returns InventoryItem|http:NotFound {
+        lock {
+	        if !inventoryItemTable.hasKey(itemId) {
+	            return {body: "Inventory item not found"};
+	        }
         }
         InventoryItem inventoryItem = {id: itemId, ...inventoryItemEntry};
-        inventoryItemTable.put(inventoryItem);
+        lock {
+	        inventoryItemTable.put(inventoryItem.clone());
+        }
         return inventoryItem;
     }
 
-    resource function delete inventory\-items/[string itemId]() returns InventoryItem|http:NotFound {
-        if !inventoryItemTable.hasKey(itemId) {
-            return {body: "Inventory item not found"};
+    isolated resource function delete inventory\-items/[string itemId]() returns InventoryItem|http:NotFound {
+        lock {
+	        if !inventoryItemTable.hasKey(itemId) {
+	            return {body: "Inventory item not found"};
+	        }
+	        return inventoryItemTable.remove(itemId).clone();
         }
-        return inventoryItemTable.remove(itemId);
     }
 }

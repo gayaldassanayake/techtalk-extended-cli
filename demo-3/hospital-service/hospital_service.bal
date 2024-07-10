@@ -4,12 +4,13 @@ import ballerina/uuid;
 listener http:Listener hospitalEP = new (9090);
 
 service /hospital on hospitalEP {
-
     # Get a list of patients
     #
     # + return - A list of patients 
-    resource function get patients() returns Patient[] {
-        return patientTable.toArray();
+    isolated resource function get patients() returns Patient[] {
+        lock {
+            return patientTable.toArray().clone();
+        }
     }
 
     # Get a patient by ID
@@ -17,20 +18,24 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:Ok (Patient details)
     # http:NotFound (Patient not found)
-    resource function get patients/[string patientId]() returns Patient|http:NotFound {
-        if !patientTable.hasKey(patientId) {
-            return {body: "Patient not found"};
+    isolated resource function get patients/[string patientId]() returns Patient|http:NotFound {
+        lock {
+            if !patientTable.hasKey(patientId) {
+                return {body: "Patient not found"};
+            }
+            return patientTable.get(patientId).clone();
         }
-        return patientTable.get(patientId);
     }
 
     # Create a new patient
     #
     # + patientEntry - PatientEntry object to be created 
     # + return - Patient created successfully 
-    resource function post patients(@http:Payload PatientEntry patientEntry) returns Patient {
+    isolated resource function post patients(@http:Payload PatientEntry patientEntry) returns Patient {
         Patient patient = {id: uuid:createRandomUuid(), ...patientEntry};
-        patientTable.put(patient);
+        lock {
+            patientTable.put(patient.clone());
+        }
         return patient;
     }
 
@@ -40,12 +45,16 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:Ok (Patient updated successfully)
     # http:NotFound (Patient not found)
-    resource function put patients/[string patientId](@http:Payload PatientEntry patientEntry) returns Patient|http:NotFound {
-        if !patientTable.hasKey(patientId) {
-            return {body: "Patient not found"};
+    isolated resource function put patients/[string patientId](@http:Payload PatientEntry patientEntry) returns Patient|http:NotFound {
+        lock {
+            if !patientTable.hasKey(patientId) {
+                return {body: "Patient not found"};
+            }
         }
         Patient patient = {id: patientId, ...patientEntry};
-        patientTable.put(patient);
+        lock {
+            patientTable.put(patient.clone());
+        }
         return patient;
     }
 
@@ -54,18 +63,22 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:NoContent (Patient deleted successfully)
     # http:NotFound (Patient not found)
-    resource function delete patients/[string patientId]() returns Patient|http:NotFound {
-        if !patientTable.hasKey(patientId) {
-            return {body: "Patient not found"};
+    isolated resource function delete patients/[string patientId]() returns Patient|http:NotFound {
+        lock {
+            if !patientTable.hasKey(patientId) {
+                return {body: "Patient not found"};
+            }
+            return patientTable.remove(patientId).clone();
         }
-        return patientTable.remove(patientId);
     }
 
     # Get a list of medical records
     #
     # + return - A list of medical records 
-    resource function get records() returns MedicalRecord[] {
-        return recordTable.toArray();
+    isolated resource function get records() returns MedicalRecord[] {
+        lock {
+            return recordTable.toArray().clone();
+        }
     }
 
     # Get a medical record by ID
@@ -73,23 +86,29 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:Ok (MedicalRecord details)
     # http:NotFound (MedicalRecord not found)
-    resource function get records/[string recordId]() returns MedicalRecord|http:NotFound {
-    if !recordTable.hasKey(recordId) {
-            return {body: "Record not found"};
+    isolated resource function get records/[string recordId]() returns MedicalRecord|http:NotFound {
+        lock {
+	        if !recordTable.hasKey(recordId) {
+	            return {body: "Record not found"};
+	        }
+	        return recordTable.get(recordId).clone();
         }
-        return recordTable.get(recordId);
     }
 
     # Create a new medical record
     #
     # + recordEntry - MedicalRecord object to be created 
     # + return - Medical created successfully 
-    resource function post records(@http:Payload MedicalRecordEntry recordEntry) returns MedicalRecord|http:NotFound {
-        if !patientTable.hasKey(recordEntry.patientId) {
-            return {body: "Patient not found"};
+    isolated resource function post records(@http:Payload MedicalRecordEntry recordEntry) returns MedicalRecord|http:NotFound {
+        lock {
+	        if !patientTable.hasKey(recordEntry.patientId) {
+	            return {body: "Patient not found"};
+	        }
         }
         MedicalRecord medRecord = {id: uuid:createRandomUuid(), ...recordEntry};
-        recordTable.put(medRecord);
+        lock {
+	        recordTable.put(medRecord.clone());
+        }
         return medRecord;
     }
 
@@ -99,15 +118,21 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:Ok (Medical record updated successfully)
     # http:NotFound (Medical record or Patient not found)
-    resource function put records/[string recordId](@http:Payload MedicalRecordEntry recordEntry) returns MedicalRecord|http:NotFound {
-        if !patientTable.hasKey(recordEntry.patientId) {
-            return {body: "Patient not found"};
+    isolated resource function put records/[string recordId](@http:Payload MedicalRecordEntry recordEntry) returns MedicalRecord|http:NotFound {
+        lock {
+	        if !patientTable.hasKey(recordEntry.patientId) {
+	            return {body: "Patient not found"};
+	        }
         }
-        if !recordTable.hasKey(recordId) {
-            return {body: "Medical record not found"};
+        lock {
+	        if !recordTable.hasKey(recordId) {
+	            return {body: "Medical record not found"};
+	        }
         }
         MedicalRecord medRecord = {id: recordId, ...recordEntry};
-        recordTable.put(medRecord);
+        lock {
+	        recordTable.put(medRecord.clone());
+        }
         return medRecord;
     }
 
@@ -116,11 +141,13 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:NoContent (Medical record deleted successfully)
     # http:NotFound (Medical record not found)
-    resource function delete records/[string recordId]() returns MedicalRecord|http:NotFound {
-        if !recordTable.hasKey(recordId) {
-            return {body: "Medical record not found"};
+    isolated resource function delete records/[string recordId]() returns MedicalRecord|http:NotFound {
+        lock {
+	        if !recordTable.hasKey(recordId) {
+	            return {body: "Medical record not found"};
+	        }
+	        return recordTable.remove(recordId).clone();
         }
-        return recordTable.remove(recordId);
     }
 
     # Get medical records for a Patient ID
@@ -128,10 +155,14 @@ service /hospital on hospitalEP {
     # + return - returns can be any of following types 
     # http:Ok (MedicalRecord details)
     # http:NotFound (Patient not found)
-    resource function get recordsByPatient/[string patientId]() returns MedicalRecord[]|http:NotFound {
-        if !patientTable.hasKey(patientId) {
-            return {body: "Patient not found"};
+    isolated resource function get recordsByPatient/[string patientId]() returns MedicalRecord[]|http:NotFound {
+        lock {
+	        if !patientTable.hasKey(patientId) {
+	            return {body: "Patient not found"};
+	        }
         }
-        return recordTable.filter((medRecord) => medRecord.patientId == patientId).toArray();
+        lock {
+	        return recordTable.filter((medRecord) => medRecord.patientId == patientId).toArray().clone();
+        }
     }
 }
